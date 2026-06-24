@@ -1,85 +1,85 @@
 # 🎣 Phishing Simulator
 
-Корпоративный симулятор фишинга для обучения сотрудников.
+A corporate phishing simulator for employee security awareness training.
 
 ---
 
-## Структура проекта
+## Project Structure
 
 ```
 phishing-simulator/
 ├── server/
-│   ├── index.js      ← основной сервер
-│   └── send.js       ← рассылка писем
+│   ├── index.js      ← main server
+│   └── send.js       ← email sender
 ├── dashboard/
-│   └── index.html    ← веб-дашборд
-├── employees.csv     ← список сотрудников
+│   └── index.html    ← web dashboard
+├── employees.csv     ← employee list
 ├── package.json
-└── railway.toml      ← конфиг для Railway
+└── railway.toml      ← Railway config
 ```
 
 ---
 
-## Шаг 1 — Создать Telegram бота
+## Step 1 — Create a Telegram Bot
 
-1. Открыть @BotFather в Telegram
-2. Написать `/newbot`
-3. Дать имя боту, получить **токен** (выглядит так: `123456:ABC-DEF...`)
-4. Написать боту `/start`
-5. Открыть в браузере:
-   `https://api.telegram.org/botВАШ_ТОКЕН/getUpdates`
-6. Найти `"chat":{"id":XXXXXXXXX}` — это ваш **Chat ID**
+1. Open @BotFather in Telegram
+2. Send `/newbot`
+3. Give your bot a name and receive a **token** (looks like: `123456:ABC-DEF...`)
+4. Send `/start` to your bot
+5. Open in a browser:
+   `https://api.telegram.org/botYOUR_TOKEN/getUpdates`
+6. Find `"chat":{"id":XXXXXXXXX}` — this is your **Chat ID**
 
 ---
 
-## Шаг 2 — Задеплоить на Railway
+## Step 2 — Deploy to Railway
 
-1. Зайти на [railway.app](https://railway.app) → войти через GitHub
-2. New Project → Deploy from GitHub repo → выбрать этот репозиторий
-3. В настройках проекта добавить переменные окружения:
+1. Go to [railway.app](https://railway.app) → sign in with GitHub
+2. New Project → Deploy from GitHub repo → select this repository
+3. Add the following environment variables in the project settings:
 
 ```
-TELEGRAM_BOT_TOKEN = ваш токен от BotFather
-TELEGRAM_CHAT_ID   = ваш chat_id
+TELEGRAM_BOT_TOKEN = your token from BotFather
+TELEGRAM_CHAT_ID   = your chat_id
 PORT               = 3000
 ```
 
-4. Railway автоматически даст URL вида: `https://ваш-проект.railway.app`
+4. Railway will automatically assign a URL like: `https://your-project.railway.app`
 
 ---
 
-## Шаг 3 — Подготовить список сотрудников
+## Step 3 — Prepare the Employee List
 
-Отредактируйте `employees.csv`:
+Edit `employees.csv`:
 
 ```csv
 name,email
-Иван Петров,ivan@company.com
-Мария Сидорова,maria@company.com
+John Smith,john@company.com
+Jane Doe,jane@company.com
 ```
 
 ---
 
-## Шаг 4 — Настроить рассылку
+## Step 4 — Configure Email Sending
 
-Добавить переменные для отправки писем:
+Add the following environment variables:
 
 ```
-SERVER_URL     = https://ваш-проект.railway.app
+SERVER_URL     = https://your-project.railway.app
 SMTP_HOST      = smtp.gmail.com
 SMTP_PORT      = 587
-SMTP_USER      = вы@gmail.com
-SMTP_PASS      = пароль приложения Gmail
-FROM_NAME      = IT Отдел
-EMAIL_SUBJECT  = Важно: подтвердите доступ к аккаунту
+SMTP_USER      = you@gmail.com
+SMTP_PASS      = your Gmail app password
+FROM_NAME      = IT Department
+EMAIL_SUBJECT  = Important: confirm access to your account
 ```
 
-> **Для Gmail:** включите двухфакторную аутентификацию,
-> затем создайте "Пароль приложения" в настройках безопасности.
+> **For Gmail:** enable two-factor authentication,
+> then create an "App Password" in your security settings.
 
 ---
 
-## Шаг 5 — Запустить рассылку
+## Step 5 — Send the Emails
 
 ```bash
 npm install
@@ -88,33 +88,33 @@ node server/send.js employees.csv
 
 ---
 
-## Дашборд
+## Dashboard
 
-После деплоя откройте:
-`https://ваш-проект.railway.app/dashboard`
+After deploying, open:
+`https://your-project.railway.app/dashboard`
 
-Дашборд обновляется автоматически каждые 5 секунд.
-
----
-
-## Как это работает
-
-```
-Сотрудник открывает письмо
-        ↓
-Outlook/почтовый клиент загружает невидимый пиксель 1x1
-        ↓
-Ваш сервер получает запрос → записывает событие "open"
-        ↓
-Telegram бот присылает уведомление
-
-Сотрудник кликает ссылку
-        ↓
-Сервер записывает событие "click" → Telegram уведомление
-        ↓
-Сотруднику показывается страница с объяснением теста
-```
+The dashboard auto-refreshes every 5 seconds.
 
 ---
 
-⚠️ **Использовать только с письменного разрешения руководства компании**
+## How It Works
+
+```
+Employee opens the email
+        ↓
+Email client loads an invisible 1x1 pixel
+        ↓
+Your server receives the request → logs an "open" event
+        ↓
+Telegram bot sends a notification
+
+Employee clicks the link
+        ↓
+Server logs a "click" event → Telegram notification
+        ↓
+Employee is shown an awareness page explaining the test
+```
+
+---
+
+⚠️ **Use only with written permission from company management**
